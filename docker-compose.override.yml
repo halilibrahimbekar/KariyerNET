@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pw
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql
+      - ./tables.sql:/docker-entrypoint-initdb.d/tables.sql
+  elasticsearch:
+    container_name: elasticsearch
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+  kariyernet:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 8080:80
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+volumes:
+  elasticsearch-data:
+  data:

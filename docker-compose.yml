@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+  kariyernet:
+    image: ${DOCKER_REGISTRY-}kariyernet
+    build:
+      context: .
+      dockerfile: KariyerNET/Dockerfile  
